@@ -13,15 +13,18 @@ public class GameController : MonoBehaviour
 	public GUIText scoreText;
 	public GUIText restartText;
 	public GUIText gameOverText;
+	public GUIText pauseText;
 
 	private bool gameOver;
 	private bool restart;
+	private bool paused;
 	private int score;
 
 	void Start ()
 	{
 		gameOver = false;
 		restart = false;
+		paused = false;
 		restartText.text = "";
 		gameOverText.text = "";
 		score = 0;
@@ -38,6 +41,19 @@ public class GameController : MonoBehaviour
 				Application.LoadLevel (Application.loadedLevel);
 			}
 		}
+		if(Input.GetKeyDown(KeyCode.Escape)){
+			if(!paused){
+				paused = true;
+				pauseText.text = "Paused";
+				Time.timeScale = 0;
+			}
+		
+			else {
+				paused = false;
+				pauseText.text = "";
+				Time.timeScale = 1;
+			}
+		}
 	}
 
 	IEnumerator SpawnWaves ()
@@ -50,6 +66,7 @@ public class GameController : MonoBehaviour
 				GameObject hazard = hazards[Random.Range (0, hazards.Length)];
 				Vector3 spawnPosition = new Vector3 (Random.Range (-spawnValues.x, spawnValues.x), spawnValues.y, spawnValues.z);
 				Quaternion spawnRotation = Quaternion.identity;
+				//Quaternion spawnRotation = Quaternion.Euler(new Vector3(0, 180, 0));
 				Instantiate (hazard, spawnPosition, spawnRotation);
 				yield return new WaitForSeconds (spawnWait);
 			}
